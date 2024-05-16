@@ -13,6 +13,7 @@ public interface OpenSCADTypes {
   IElementType ARG_ASSIGNMENT_LIST = OpenSCADElementFactory.getElementType("ARG_ASSIGNMENT_LIST");
   IElementType ARG_DECLARATION = OpenSCADElementFactory.getElementType("ARG_DECLARATION");
   IElementType ARG_DECLARATION_LIST = OpenSCADElementFactory.getElementType("ARG_DECLARATION_LIST");
+  IElementType ASSERT_ARG_LIST = OpenSCADElementFactory.getElementType("ASSERT_ARG_LIST");
   IElementType ASSERT_ELEMENT = OpenSCADElementFactory.getElementType("ASSERT_ELEMENT");
   IElementType ASSERT_EXPR = OpenSCADElementFactory.getElementType("ASSERT_EXPR");
   IElementType BACKGROUND_OP = OpenSCADElementFactory.getElementType("BACKGROUND_OP");
@@ -28,6 +29,7 @@ public interface OpenSCADTypes {
   IElementType DEBUG_OP = OpenSCADElementFactory.getElementType("DEBUG_OP");
   IElementType DISABLE_OP = OpenSCADElementFactory.getElementType("DISABLE_OP");
   IElementType DIV_EXPR = OpenSCADElementFactory.getElementType("DIV_EXPR");
+  IElementType EACH_EXPR = OpenSCADElementFactory.getElementType("EACH_EXPR");
   IElementType ECHO_ARG_LIST = OpenSCADElementFactory.getElementType("ECHO_ARG_LIST");
   IElementType ECHO_ELEMENT = OpenSCADElementFactory.getElementType("ECHO_ELEMENT");
   IElementType ECHO_EXPR = OpenSCADElementFactory.getElementType("ECHO_EXPR");
@@ -96,7 +98,6 @@ public interface OpenSCADTypes {
   IElementType CHILDREN_KEYWORD = new OpenSCADTokenType("CHILDREN_KEYWORD");
   IElementType CHILD_KEYWORD = new OpenSCADTokenType("CHILD_KEYWORD");
   IElementType CHR_KEYWORD = new OpenSCADTokenType("CHR_KEYWORD");
-  IElementType CIRCLE_KEYWORD = new OpenSCADTokenType("CIRCLE_KEYWORD");
   IElementType COLON = new OpenSCADTokenType("COLON");
   IElementType COLOR_KEYWORD = new OpenSCADTokenType("COLOR_KEYWORD");
   IElementType COMA = new OpenSCADTokenType("COMA");
@@ -110,8 +111,6 @@ public interface OpenSCADTypes {
   IElementType CONCAT_KEYWORD = new OpenSCADTokenType("CONCAT_KEYWORD");
   IElementType COS_KEYWORD = new OpenSCADTokenType("COS_KEYWORD");
   IElementType CROSS_KEYWORD = new OpenSCADTokenType("CROSS_KEYWORD");
-  IElementType CUBE_KEYWORD = new OpenSCADTokenType("CUBE_KEYWORD");
-  IElementType CYLINDER_KEYWORD = new OpenSCADTokenType("CYLINDER_KEYWORD");
   IElementType DIFFERENCE_KEYWORD = new OpenSCADTokenType("DIFFERENCE_KEYWORD");
   IElementType DIV = new OpenSCADTokenType("DIV");
   IElementType DOT = new OpenSCADTokenType("DOT");
@@ -130,7 +129,6 @@ public interface OpenSCADTypes {
   IElementType GE = new OpenSCADTokenType("GE");
   IElementType GT = new OpenSCADTokenType("GT");
   IElementType HASH = new OpenSCADTokenType("HASH");
-  IElementType HULL_KEYWORD = new OpenSCADTokenType("HULL_KEYWORD");
   IElementType IDENTIFIER = new OpenSCADTokenType("IDENTIFIER");
   IElementType IF_KEYWORD = new OpenSCADTokenType("IF_KEYWORD");
   IElementType IMPORT_DXF_KEYWORD = new OpenSCADTokenType("IMPORT_DXF_KEYWORD");
@@ -141,7 +139,6 @@ public interface OpenSCADTypes {
   IElementType IMPORT_STL_KEYWORD = new OpenSCADTokenType("IMPORT_STL_KEYWORD");
   IElementType INCLUDE_KEYWORD = new OpenSCADTokenType("INCLUDE_KEYWORD");
   IElementType INTERSECTION_FOR_KEYWORD = new OpenSCADTokenType("INTERSECTION_FOR_KEYWORD");
-  IElementType INTERSECTION_KEYWORD = new OpenSCADTokenType("INTERSECTION_KEYWORD");
   IElementType IS_BOOL_KEYWORD = new OpenSCADTokenType("IS_BOOL_KEYWORD");
   IElementType IS_FUNCTION_KEYWORD = new OpenSCADTokenType("IS_FUNCTION_KEYWORD");
   IElementType IS_LIST_KEYWORD = new OpenSCADTokenType("IS_LIST_KEYWORD");
@@ -163,14 +160,12 @@ public interface OpenSCADTypes {
   IElementType MINKOWSKI_KEYWORD = new OpenSCADTokenType("MINKOWSKI_KEYWORD");
   IElementType MINUS = new OpenSCADTokenType("MINUS");
   IElementType MIN_KEYWORD = new OpenSCADTokenType("MIN_KEYWORD");
-  IElementType MIRROR_KEYWORD = new OpenSCADTokenType("MIRROR_KEYWORD");
   IElementType MODULE_KEYWORD = new OpenSCADTokenType("MODULE_KEYWORD");
   IElementType MUL = new OpenSCADTokenType("MUL");
   IElementType MULTMATRIX_KEYWORD = new OpenSCADTokenType("MULTMATRIX_KEYWORD");
   IElementType NE = new OpenSCADTokenType("NE");
   IElementType NORM_KEYWORD = new OpenSCADTokenType("NORM_KEYWORD");
   IElementType NUMBER_LITERAL = new OpenSCADTokenType("NUMBER_LITERAL");
-  IElementType OFFSET_KEYWORD = new OpenSCADTokenType("OFFSET_KEYWORD");
   IElementType OR = new OpenSCADTokenType("OR");
   IElementType ORD_KEYWORD = new OpenSCADTokenType("ORD_KEYWORD");
   IElementType PARENT_MODULE_KEYWORD = new OpenSCADTokenType("PARENT_MODULE_KEYWORD");
@@ -190,20 +185,16 @@ public interface OpenSCADTypes {
   IElementType ROTATE_KEYWORD = new OpenSCADTokenType("ROTATE_KEYWORD");
   IElementType ROUND_KEYWORD = new OpenSCADTokenType("ROUND_KEYWORD");
   IElementType RPARENTH = new OpenSCADTokenType("RPARENTH");
-  IElementType SCALE_KEYWORD = new OpenSCADTokenType("SCALE_KEYWORD");
   IElementType SEARCH_KEYWORD = new OpenSCADTokenType("SEARCH_KEYWORD");
   IElementType SEMICOLON = new OpenSCADTokenType("SEMICOLON");
   IElementType SIGN_KEYWORD = new OpenSCADTokenType("SIGN_KEYWORD");
   IElementType SIN_KEYWORD = new OpenSCADTokenType("SIN_KEYWORD");
-  IElementType SPHERE_KEYWORD = new OpenSCADTokenType("SPHERE_KEYWORD");
   IElementType SQRT_KEYWORD = new OpenSCADTokenType("SQRT_KEYWORD");
-  IElementType SQUARE_KEYWORD = new OpenSCADTokenType("SQUARE_KEYWORD");
   IElementType STRING_LITERAL = new OpenSCADTokenType("STRING_LITERAL");
   IElementType STR_KEYWORD = new OpenSCADTokenType("STR_KEYWORD");
   IElementType SURFACE_KEYWORD = new OpenSCADTokenType("SURFACE_KEYWORD");
   IElementType TAN_KEYWORD = new OpenSCADTokenType("TAN_KEYWORD");
   IElementType TEXT_KEYWORD = new OpenSCADTokenType("TEXT_KEYWORD");
-  IElementType TRANSLATE_KEYWORD = new OpenSCADTokenType("TRANSLATE_KEYWORD");
   IElementType TRUE_KEYWORD = new OpenSCADTokenType("TRUE_KEYWORD");
   IElementType UNDEF_KEYWORD = new OpenSCADTokenType("UNDEF_KEYWORD");
   IElementType UNION_KEYWORD = new OpenSCADTokenType("UNION_KEYWORD");
@@ -228,6 +219,9 @@ public interface OpenSCADTypes {
       }
       else if (type == ARG_DECLARATION_LIST) {
         return new OpenSCADArgDeclarationListImpl(node);
+      }
+      else if (type == ASSERT_ARG_LIST) {
+        return new OpenSCADAssertArgListImpl(node);
       }
       else if (type == ASSERT_ELEMENT) {
         return new OpenSCADAssertElementImpl(node);
@@ -273,6 +267,9 @@ public interface OpenSCADTypes {
       }
       else if (type == DIV_EXPR) {
         return new OpenSCADDivExprImpl(node);
+      }
+      else if (type == EACH_EXPR) {
+        return new OpenSCADEachExprImpl(node);
       }
       else if (type == ECHO_ARG_LIST) {
         return new OpenSCADEchoArgListImpl(node);

@@ -23,6 +23,7 @@ logic = true;
 MyString = "This is a string";
 a_vector = [1, 2, 3];
 rr = a_vector[2];      // member of vector
+rr2 = a_vector[logic ? 0: 1];   // selected member of vector
 range1 = [- 1.5:0.5:3]; // for() loop range
 xx = [0:5];            // alternate for() loop range
 p = pow(var, rr[0]);

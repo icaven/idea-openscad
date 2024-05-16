@@ -31,6 +31,10 @@ public class OpenSCADVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAssertArgList(@NotNull OpenSCADAssertArgList o) {
+    visitPsiElement(o);
+  }
+
   public void visitAssertElement(@NotNull OpenSCADAssertElement o) {
     visitPsiElement(o);
   }
@@ -88,6 +92,10 @@ public class OpenSCADVisitor extends PsiElementVisitor {
   }
 
   public void visitDivExpr(@NotNull OpenSCADDivExpr o) {
+    visitExpr(o);
+  }
+
+  public void visitEachExpr(@NotNull OpenSCADEachExpr o) {
     visitExpr(o);
   }
 

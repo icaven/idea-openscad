@@ -34,6 +34,12 @@ public class OpenSCADBuiltinObjImpl extends OpenSCADObjectImpl implements OpenSC
   }
 
   @Override
+  @NotNull
+  public List<OpenSCADAssertElement> getAssertElementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, OpenSCADAssertElement.class);
+  }
+
+  @Override
   @Nullable
   public OpenSCADBuiltinObjRef getBuiltinObjRef() {
     return findChildByClass(OpenSCADBuiltinObjRef.class);
@@ -43,6 +49,12 @@ public class OpenSCADBuiltinObjImpl extends OpenSCADObjectImpl implements OpenSC
   @Nullable
   public OpenSCADBuiltinOp getBuiltinOp() {
     return findChildByClass(OpenSCADBuiltinOp.class);
+  }
+
+  @Override
+  @NotNull
+  public List<OpenSCADEchoElement> getEchoElementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, OpenSCADEchoElement.class);
   }
 
   @Override
