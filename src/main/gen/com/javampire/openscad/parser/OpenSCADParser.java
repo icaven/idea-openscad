@@ -405,6 +405,7 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // (builtin_obj_ref arg_assignment_list SEMICOLON)
+  //                 | (builtin_overridable_obj_ref arg_assignment_list SEMICOLON)
   //                 | (builtin_op block_obj)
   //                 | (builtin_op statement)
   //                 | (echo_element+ object)
@@ -418,6 +419,7 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     if (!r) r = builtin_obj_2(b, l + 1);
     if (!r) r = builtin_obj_3(b, l + 1);
     if (!r) r = builtin_obj_4(b, l + 1);
+    if (!r) r = builtin_obj_5(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -434,9 +436,21 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // builtin_op block_obj
+  // builtin_overridable_obj_ref arg_assignment_list SEMICOLON
   private static boolean builtin_obj_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtin_obj_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_overridable_obj_ref(b, l + 1);
+    r = r && arg_assignment_list(b, l + 1);
+    r = r && consumeToken(b, SEMICOLON);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // builtin_op block_obj
+  private static boolean builtin_obj_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_obj_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = builtin_op(b, l + 1);
@@ -446,8 +460,8 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   // builtin_op statement
-  private static boolean builtin_obj_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "builtin_obj_2")) return false;
+  private static boolean builtin_obj_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_obj_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = builtin_op(b, l + 1);
@@ -457,32 +471,6 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   // echo_element+ object
-  private static boolean builtin_obj_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "builtin_obj_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = builtin_obj_3_0(b, l + 1);
-    r = r && object(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // echo_element+
-  private static boolean builtin_obj_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "builtin_obj_3_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = echo_element(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!echo_element(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "builtin_obj_3_0", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // assert_element+ object
   private static boolean builtin_obj_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtin_obj_4")) return false;
     boolean r;
@@ -493,16 +481,42 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // assert_element+
+  // echo_element+
   private static boolean builtin_obj_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtin_obj_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = echo_element(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!echo_element(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "builtin_obj_4_0", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // assert_element+ object
+  private static boolean builtin_obj_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_obj_5")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_obj_5_0(b, l + 1);
+    r = r && object(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // assert_element+
+  private static boolean builtin_obj_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_obj_5_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = assert_element(b, l + 1);
     while (r) {
       int c = current_position_(b);
       if (!assert_element(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "builtin_obj_4_0", c)) break;
+      if (!empty_element_parsed_guard_(b, "builtin_obj_5_0", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
@@ -541,12 +555,157 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // common_op_ref arg_assignment_list
+  //                 | builtin_overridable_op_ref arg_assignment_list
+  //                 | builtin_overridable_op_as_function_ref arg_assignment_list
   public static boolean builtin_op(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtin_op")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BUILTIN_OP, "<builtin op>");
+    r = builtin_op_0(b, l + 1);
+    if (!r) r = builtin_op_1(b, l + 1);
+    if (!r) r = builtin_op_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // common_op_ref arg_assignment_list
+  private static boolean builtin_op_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_op_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
     r = common_op_ref(b, l + 1);
     r = r && arg_assignment_list(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // builtin_overridable_op_ref arg_assignment_list
+  private static boolean builtin_op_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_op_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_overridable_op_ref(b, l + 1);
+    r = r && arg_assignment_list(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // builtin_overridable_op_as_function_ref arg_assignment_list
+  private static boolean builtin_op_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_op_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_overridable_op_as_function_ref(b, l + 1);
+    r = r && arg_assignment_list(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // builtin_overridable_op_as_function_ref arg_assignment_list
+  //                             | builtin_overridable_op_ref arg_assignment_list
+  public static boolean builtin_overridable_expr_ref(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_expr_ref")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BUILTIN_OVERRIDABLE_EXPR_REF, "<builtin overridable expr ref>");
+    r = builtin_overridable_expr_ref_0(b, l + 1);
+    if (!r) r = builtin_overridable_expr_ref_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // builtin_overridable_op_as_function_ref arg_assignment_list
+  private static boolean builtin_overridable_expr_ref_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_expr_ref_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_overridable_op_as_function_ref(b, l + 1);
+    r = r && arg_assignment_list(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // builtin_overridable_op_ref arg_assignment_list
+  private static boolean builtin_overridable_expr_ref_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_expr_ref_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = builtin_overridable_op_ref(b, l + 1);
+    r = r && arg_assignment_list(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // CIRCLE_KEYWORD
+  //                   | CUBE_KEYWORD
+  //                   | CYLINDER_KEYWORD
+  //                   | SPHERE_KEYWORD
+  //                   | SQUARE_KEYWORD
+  static boolean builtin_overridable_obj_keywords(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_obj_keywords")) return false;
+    boolean r;
+    r = consumeToken(b, CIRCLE_KEYWORD);
+    if (!r) r = consumeToken(b, CUBE_KEYWORD);
+    if (!r) r = consumeToken(b, CYLINDER_KEYWORD);
+    if (!r) r = consumeToken(b, SPHERE_KEYWORD);
+    if (!r) r = consumeToken(b, SQUARE_KEYWORD);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // builtin_overridable_obj_keywords
+  public static boolean builtin_overridable_obj_ref(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_obj_ref")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BUILTIN_OVERRIDABLE_OBJ_REF, "<builtin overridable obj ref>");
+    r = builtin_overridable_obj_keywords(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // builtin_overridable_op_keywords | builtin_overridable_obj_keywords
+  public static boolean builtin_overridable_op_as_function_ref(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_op_as_function_ref")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BUILTIN_OVERRIDABLE_OP_AS_FUNCTION_REF, "<builtin overridable op as function ref>");
+    r = builtin_overridable_op_keywords(b, l + 1);
+    if (!r) r = builtin_overridable_obj_keywords(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // OFFSET_KEYWORD
+  //                   | TRANSLATE_KEYWORD
+  //                   | HULL_KEYWORD
+  //                   | MIRROR_KEYWORD
+  //                   | SCALE_KEYWORD
+  //                   | DIFFERENCE_KEYWORD
+  //                   | INTERSECTION_KEYWORD
+  //                   | UNION_KEYWORD
+  static boolean builtin_overridable_op_keywords(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_op_keywords")) return false;
+    boolean r;
+    r = consumeToken(b, OFFSET_KEYWORD);
+    if (!r) r = consumeToken(b, TRANSLATE_KEYWORD);
+    if (!r) r = consumeToken(b, HULL_KEYWORD);
+    if (!r) r = consumeToken(b, MIRROR_KEYWORD);
+    if (!r) r = consumeToken(b, SCALE_KEYWORD);
+    if (!r) r = consumeToken(b, DIFFERENCE_KEYWORD);
+    if (!r) r = consumeToken(b, INTERSECTION_KEYWORD);
+    if (!r) r = consumeToken(b, UNION_KEYWORD);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // builtin_overridable_op_keywords
+  public static boolean builtin_overridable_op_ref(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "builtin_overridable_op_ref")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, BUILTIN_OVERRIDABLE_OP_REF, "<builtin overridable op ref>");
+    r = builtin_overridable_op_keywords(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -567,7 +726,6 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // COLOR_KEYWORD
-  //                 | DIFFERENCE_KEYWORD
   //                 | LINEAR_EXTRUDE_KEYWORD
   //                 | MINKOWSKI_KEYWORD
   //                 | MULTMATRIX_KEYWORD
@@ -576,13 +734,11 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   //                 | RESIZE_KEYWORD
   //                 | ROTATE_KEYWORD
   //                 | ROTATE_EXTRUDE_KEYWORD
-  //                 | UNION_KEYWORD
   public static boolean common_op_ref(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "common_op_ref")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, COMMON_OP_REF, "<common op ref>");
     r = consumeToken(b, COLOR_KEYWORD);
-    if (!r) r = consumeToken(b, DIFFERENCE_KEYWORD);
     if (!r) r = consumeToken(b, LINEAR_EXTRUDE_KEYWORD);
     if (!r) r = consumeToken(b, MINKOWSKI_KEYWORD);
     if (!r) r = consumeToken(b, MULTMATRIX_KEYWORD);
@@ -591,7 +747,6 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RESIZE_KEYWORD);
     if (!r) r = consumeToken(b, ROTATE_KEYWORD);
     if (!r) r = consumeToken(b, ROTATE_EXTRUDE_KEYWORD);
-    if (!r) r = consumeToken(b, UNION_KEYWORD);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1079,20 +1234,31 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FUNCTION_KEYWORD IDENTIFIER arg_declaration_list EQUALS expr SEMICOLON
+  // FUNCTION_KEYWORD (builtin_overridable_op_keywords | builtin_overridable_obj_keywords | IDENTIFIER) arg_declaration_list EQUALS expr SEMICOLON
   public static boolean function_declaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "function_declaration")) return false;
     if (!nextTokenIs(b, FUNCTION_KEYWORD)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, FUNCTION_DECLARATION, null);
-    r = consumeTokens(b, 1, FUNCTION_KEYWORD, IDENTIFIER);
+    r = consumeToken(b, FUNCTION_KEYWORD);
     p = r; // pin = 1
-    r = r && report_error_(b, arg_declaration_list(b, l + 1));
+    r = r && report_error_(b, function_declaration_1(b, l + 1));
+    r = p && report_error_(b, arg_declaration_list(b, l + 1)) && r;
     r = p && report_error_(b, consumeToken(b, EQUALS)) && r;
     r = p && report_error_(b, expr(b, l + 1, -1)) && r;
     r = p && consumeToken(b, SEMICOLON) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  // builtin_overridable_op_keywords | builtin_overridable_obj_keywords | IDENTIFIER
+  private static boolean function_declaration_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "function_declaration_1")) return false;
+    boolean r;
+    r = builtin_overridable_op_keywords(b, l + 1);
+    if (!r) r = builtin_overridable_obj_keywords(b, l + 1);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    return r;
   }
 
   /* ********************************************************** */
@@ -2073,12 +2239,14 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
 
   // builtin_expr_ref arg_assignment_list
   //                | LET_KEYWORD full_arg_declaration_list expr
+  //                | builtin_overridable_expr_ref
   public static boolean builtin_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtin_expr")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, BUILTIN_EXPR, "<builtin expr>");
     r = builtin_expr_0(b, l + 1);
     if (!r) r = builtin_expr_1(b, l + 1);
+    if (!r) r = builtin_overridable_expr_ref(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

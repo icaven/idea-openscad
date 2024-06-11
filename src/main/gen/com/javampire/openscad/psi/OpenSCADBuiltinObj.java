@@ -19,6 +19,9 @@ public interface OpenSCADBuiltinObj extends OpenSCADObject {
   @Nullable
   OpenSCADBuiltinOp getBuiltinOp();
 
+  @Nullable
+  OpenSCADBuiltinOverridableObjRef getBuiltinOverridableObjRef();
+
   @NotNull
   List<OpenSCADEchoElement> getEchoElementList();
 

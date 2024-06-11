@@ -75,6 +75,22 @@ public class OpenSCADVisitor extends PsiElementVisitor {
     visitOperator(o);
   }
 
+  public void visitBuiltinOverridableExprRef(@NotNull OpenSCADBuiltinOverridableExprRef o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBuiltinOverridableObjRef(@NotNull OpenSCADBuiltinOverridableObjRef o) {
+    visitResolvableElement(o);
+  }
+
+  public void visitBuiltinOverridableOpAsFunctionRef(@NotNull OpenSCADBuiltinOverridableOpAsFunctionRef o) {
+    visitResolvableElement(o);
+  }
+
+  public void visitBuiltinOverridableOpRef(@NotNull OpenSCADBuiltinOverridableOpRef o) {
+    visitResolvableElement(o);
+  }
+
   public void visitCommonOpRef(@NotNull OpenSCADCommonOpRef o) {
     visitResolvableElement(o);
   }

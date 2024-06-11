@@ -52,6 +52,12 @@ public class OpenSCADBuiltinObjImpl extends OpenSCADObjectImpl implements OpenSC
   }
 
   @Override
+  @Nullable
+  public OpenSCADBuiltinOverridableObjRef getBuiltinOverridableObjRef() {
+    return findChildByClass(OpenSCADBuiltinOverridableObjRef.class);
+  }
+
+  @Override
   @NotNull
   public List<OpenSCADEchoElement> getEchoElementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, OpenSCADEchoElement.class);

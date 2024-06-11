@@ -76,29 +76,29 @@ STRING_LITERAL = \"  ([^\\\"] | {ESCAPE_SEQUENCE})* \"?
     "linear_extrude"            / {BUILTIN_COND} { return OpenSCADTypes.LINEAR_EXTRUDE_KEYWORD; }
     "rotate_extrude"            / {BUILTIN_COND} { return OpenSCADTypes.ROTATE_EXTRUDE_KEYWORD; }
     "rotate"                    / {BUILTIN_COND} { return OpenSCADTypes.ROTATE_KEYWORD; }
-//    "translate"                 / {BUILTIN_COND} { return OpenSCADTypes.TRANSLATE_KEYWORD; }
-//    "scale"                     / {BUILTIN_COND} { return OpenSCADTypes.SCALE_KEYWORD; }
+    "translate"                 / {BUILTIN_COND} { return OpenSCADTypes.TRANSLATE_KEYWORD; }
+    "scale"                     / {BUILTIN_COND} { return OpenSCADTypes.SCALE_KEYWORD; }
     "resize"                    / {BUILTIN_COND} { return OpenSCADTypes.RESIZE_KEYWORD; }
-//    "mirror"                    / {BUILTIN_COND} { return OpenSCADTypes.MIRROR_KEYWORD; }
+    "mirror"                    / {BUILTIN_COND} { return OpenSCADTypes.MIRROR_KEYWORD; }
     "multmatrix"                / {BUILTIN_COND} { return OpenSCADTypes.MULTMATRIX_KEYWORD; }
     "color"                     / {BUILTIN_COND} { return OpenSCADTypes.COLOR_KEYWORD; }
-//    "offset"                    / {BUILTIN_COND} { return OpenSCADTypes.OFFSET_KEYWORD; }
+    "offset"                    / {BUILTIN_COND} { return OpenSCADTypes.OFFSET_KEYWORD; }
     "minkowski"                 / {BUILTIN_COND} { return OpenSCADTypes.MINKOWSKI_KEYWORD; }
-//    "hull"                      / {BUILTIN_COND} { return OpenSCADTypes.HULL_KEYWORD; }
-//    "union"                     / {BUILTIN_COND} { return OpenSCADTypes.UNION_KEYWORD; }
-//    "difference"                / {BUILTIN_COND} { return OpenSCADTypes.DIFFERENCE_KEYWORD; }
-//    "intersection"              / {BUILTIN_COND} { return OpenSCADTypes.INTERSECTION_KEYWORD; }
+    "hull"                      / {BUILTIN_COND} { return OpenSCADTypes.HULL_KEYWORD; }
+    "union"                     / {BUILTIN_COND} { return OpenSCADTypes.UNION_KEYWORD; }
+    "difference"                / {BUILTIN_COND} { return OpenSCADTypes.DIFFERENCE_KEYWORD; }
+    "intersection"              / {BUILTIN_COND} { return OpenSCADTypes.INTERSECTION_KEYWORD; }
     "render"                    / {BUILTIN_COND} { return OpenSCADTypes.RENDER_KEYWORD; }
     "projection"                / {BUILTIN_COND} { return OpenSCADTypes.PROJECTION_KEYWORD; }
 
-//    "cube"                      / {BUILTIN_COND} { return OpenSCADTypes.CUBE_KEYWORD; }
-//    "cylinder"                  / {BUILTIN_COND} { return OpenSCADTypes.CYLINDER_KEYWORD; }
+    "cube"                      / {BUILTIN_COND} { return OpenSCADTypes.CUBE_KEYWORD; }
+    "cylinder"                  / {BUILTIN_COND} { return OpenSCADTypes.CYLINDER_KEYWORD; }
     "assert"                    / {BUILTIN_COND} { return OpenSCADTypes.ASSERT_KEYWORD; }
     "echo"                      / {BUILTIN_COND} { return OpenSCADTypes.ECHO_KEYWORD; }
-//    "sphere"                    / {BUILTIN_COND} { return OpenSCADTypes.SPHERE_KEYWORD; }
+    "sphere"                    / {BUILTIN_COND} { return OpenSCADTypes.SPHERE_KEYWORD; }
     "polyhedron"                / {BUILTIN_COND} { return OpenSCADTypes.POLYHEDRON_KEYWORD; }
-//    "square"                    / {BUILTIN_COND} { return OpenSCADTypes.SQUARE_KEYWORD; }
-//    "circle"                    / {BUILTIN_COND} { return OpenSCADTypes.CIRCLE_KEYWORD; }
+    "square"                    / {BUILTIN_COND} { return OpenSCADTypes.SQUARE_KEYWORD; }
+    "circle"                    / {BUILTIN_COND} { return OpenSCADTypes.CIRCLE_KEYWORD; }
     "polygon"                   / {BUILTIN_COND} { return OpenSCADTypes.POLYGON_KEYWORD; }
     "text"                      / {BUILTIN_COND} { return OpenSCADTypes.TEXT_KEYWORD; }
     "surface"                   / {BUILTIN_COND} { return OpenSCADTypes.SURFACE_KEYWORD; }

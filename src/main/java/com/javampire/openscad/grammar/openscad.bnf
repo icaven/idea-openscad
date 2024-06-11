@@ -54,6 +54,7 @@ object ::= builtin_obj
          | empty_obj
 
 builtin_obj ::= (builtin_obj_ref arg_assignment_list SEMICOLON)
+                | (builtin_overridable_obj_ref arg_assignment_list SEMICOLON)
                 | (builtin_op block_obj)
                 | (builtin_op statement)
                 | (echo_element+ object)
@@ -72,6 +73,49 @@ builtin_obj_ref ::= ASSERT_KEYWORD
     mixin="com.javampire.openscad.psi.OpenSCADResolvableElementImpl"
     implements=["com.javampire.openscad.psi.OpenSCADResolvableElement"]
     methods=[setName getNameIdentifier]
+}
+
+// These can be a module or a function
+private builtin_overridable_obj_keywords ::=
+                    CIRCLE_KEYWORD
+                  | CUBE_KEYWORD
+                  | CYLINDER_KEYWORD
+                  | SPHERE_KEYWORD
+                  | SQUARE_KEYWORD
+
+builtin_overridable_obj_ref ::= builtin_overridable_obj_keywords
+                   {
+    mixin="com.javampire.openscad.psi.OpenSCADResolvableElementImpl"
+    implements="com.javampire.openscad.psi.OpenSCADResolvableElement"
+    methods=[getPresentation getNameIdentifier]
+}
+
+private builtin_overridable_op_keywords ::=
+                    OFFSET_KEYWORD
+                  | TRANSLATE_KEYWORD
+                  | HULL_KEYWORD
+                  | MIRROR_KEYWORD
+                  | SCALE_KEYWORD
+                  | DIFFERENCE_KEYWORD
+                  | INTERSECTION_KEYWORD
+                  | UNION_KEYWORD
+
+builtin_overridable_op_as_function_ref ::= builtin_overridable_op_keywords | builtin_overridable_obj_keywords
+                  {
+    mixin="com.javampire.openscad.psi.OpenSCADResolvableElementImpl"
+    implements="com.javampire.openscad.psi.OpenSCADResolvableElement"
+    methods=[getPresentation getNameIdentifier]
+}
+
+// These can be an operator or a function
+builtin_overridable_expr_ref ::=  builtin_overridable_op_as_function_ref arg_assignment_list
+                            | builtin_overridable_op_ref arg_assignment_list
+
+builtin_overridable_op_ref ::= builtin_overridable_op_keywords
+                   {
+    mixin="com.javampire.openscad.psi.OpenSCADResolvableElementImpl"
+    implements="com.javampire.openscad.psi.OpenSCADResolvableElement"
+    methods=[getPresentation getNameIdentifier]
 }
 
 module_call_obj ::= module_obj_name_ref arg_assignment_list SEMICOLON
@@ -110,7 +154,7 @@ module_declaration ::= MODULE_KEYWORD IDENTIFIER arg_declaration_list statement 
     methods=[getPresentation getNameIdentifier]
 }
 
-function_declaration ::= FUNCTION_KEYWORD IDENTIFIER arg_declaration_list EQUALS expr SEMICOLON {
+function_declaration ::= FUNCTION_KEYWORD (builtin_overridable_op_keywords | builtin_overridable_obj_keywords | IDENTIFIER) arg_declaration_list EQUALS expr SEMICOLON {
     pin=1
     mixin="com.javampire.openscad.psi.stub.function.OpenSCADFunctionDeclarationStubElementImpl"
     implements=[
@@ -143,10 +187,11 @@ debug_op ::= HASH
 root_op ::= EXCL
 disable_op ::= MUL
 
-builtin_op ::= common_op_ref arg_assignment_list
+builtin_op ::=    common_op_ref arg_assignment_list
+                | builtin_overridable_op_ref arg_assignment_list
+                | builtin_overridable_op_as_function_ref arg_assignment_list
 
 common_op_ref ::= COLOR_KEYWORD
-                | DIFFERENCE_KEYWORD
                 | LINEAR_EXTRUDE_KEYWORD
                 | MINKOWSKI_KEYWORD
                 | MULTMATRIX_KEYWORD
@@ -155,7 +200,7 @@ common_op_ref ::= COLOR_KEYWORD
                 | RESIZE_KEYWORD
                 | ROTATE_KEYWORD
                 | ROTATE_EXTRUDE_KEYWORD
-                | UNION_KEYWORD {
+                {
     mixin="com.javampire.openscad.psi.OpenSCADResolvableElementImpl"
     implements="com.javampire.openscad.psi.OpenSCADResolvableElement"
     methods=[setName getNameIdentifier]
@@ -246,6 +291,8 @@ else_element ::= ELSE_KEYWORD [if_element]
 let_element ::= LET_KEYWORD full_arg_declaration_list
 builtin_expr ::= builtin_expr_ref arg_assignment_list
                | LET_KEYWORD full_arg_declaration_list expr
+               | builtin_overridable_expr_ref
+
 builtin_expr_ref ::= ABS_KEYWORD
                    | ACOS_KEYWORD
                    | ASIN_KEYWORD
