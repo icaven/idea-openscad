@@ -75,6 +75,7 @@ public interface OpenSCADTypes {
   IElementType POWER_EXPR = OpenSCADElementFactory.getElementType("POWER_EXPR");
   IElementType QUALIFICATION_EXPR = OpenSCADElementFactory.getElementType("QUALIFICATION_EXPR");
   IElementType RANGE_EXPR = OpenSCADElementFactory.getElementType("RANGE_EXPR");
+  IElementType REPORTING_ELEMENT = OpenSCADElementFactory.getElementType("REPORTING_ELEMENT");
   IElementType ROOT_OP = OpenSCADElementFactory.getElementType("ROOT_OP");
   IElementType TEST_EXPR = OpenSCADElementFactory.getElementType("TEST_EXPR");
   IElementType TEST_EXP_REF = OpenSCADElementFactory.getElementType("TEST_EXP_REF");
@@ -396,6 +397,9 @@ public interface OpenSCADTypes {
       }
       else if (type == RANGE_EXPR) {
         return new OpenSCADRangeExprImpl(node);
+      }
+      else if (type == REPORTING_ELEMENT) {
+        return new OpenSCADReportingElementImpl(node);
       }
       else if (type == ROOT_OP) {
         return new OpenSCADRootOpImpl(node);

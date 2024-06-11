@@ -121,3 +121,28 @@ smb = 30;  // semi-major axis
 polygon(
 [for (a = [0 : 5 : 359]) [sma * sin(a), smb * cos(a)]]
 );
+
+// Optional parentheses around the body of the for loop in the vector item, or around the vector item
+list_items = [ for(i=[0:1:2]) /* a comment */ echo(i)];
+list_items = [ for(i=[0:1:2]) /* a comment */ if (true) i];
+list_items = [ for(i=[0:1:2]) if (true) i];
+list_items = [ for(i=[0:1:2]) if (true) (i)];
+list_items = [ for(i=[0:1:2]) if (true) /* a comment */
+    //
+    echo(i) echo(1) assert(false, "skdflkad") (i)];
+list_items = [ /* a comment */ for(i=[0:1:2]) /* a comment */ if (true) /* a comment */ i];
+list_items = [ for(i=[0:1:2]) if (true) /* a comment */ echo(i) echo(1) assert(true, "was true, returning i") (i)];
+list_items = [ for(i=[0:1:2]) if (true) /* a comment */ echo(i) echo(1) assert(true, "was true, just report")];
+echo(list_items);
+
+// ECHO: [0, 1, 2]
+list_items_with_paren = [ ( for(i=[0:1:2]) if (true) i )];
+echo(list_items_with_paren);
+// ECHO: [0, 1, 2]
+list_items_with_paren_for_body = [ for(i=[0:1:2]) ( if (true) i )];
+echo(list_items_with_paren_for_body);
+// ECHO: [0, 1, 2]
+q = [for(i=[len(a)-1:-1:1]) a[i]*n, (a[0]-line[0])*n];
+
+// This next line will give an error
+too_many_commas = [1,,2];

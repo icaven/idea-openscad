@@ -81,7 +81,7 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LPARENTH arg_assignment? ( COMMA+ arg_assignment )* RPARENTH
+  // LPARENTH arg_assignment? ( COMMA arg_assignment )* RPARENTH
   public static boolean arg_assignment_list(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arg_assignment_list")) return false;
     if (!nextTokenIs(b, LPARENTH)) return false;
@@ -103,7 +103,7 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ( COMMA+ arg_assignment )*
+  // ( COMMA arg_assignment )*
   private static boolean arg_assignment_list_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arg_assignment_list_2")) return false;
     while (true) {
@@ -114,31 +114,16 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA+ arg_assignment
+  // COMMA arg_assignment
   private static boolean arg_assignment_list_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arg_assignment_list_2_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
-    r = arg_assignment_list_2_0_0(b, l + 1);
+    r = consumeToken(b, COMMA);
     p = r; // pin = 1
     r = r && arg_assignment(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
-  }
-
-  // COMMA+
-  private static boolean arg_assignment_list_2_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "arg_assignment_list_2_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, COMMA)) break;
-      if (!empty_element_parsed_guard_(b, "arg_assignment_list_2_0_0", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */
@@ -1536,6 +1521,38 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // comment_item* (echo_element | assert_element)
+  public static boolean reporting_element(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "reporting_element")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, REPORTING_ELEMENT, "<reporting element>");
+    r = reporting_element_0(b, l + 1);
+    r = r && reporting_element_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // comment_item*
+  private static boolean reporting_element_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "reporting_element_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "reporting_element_0", c)) break;
+    }
+    return true;
+  }
+
+  // echo_element | assert_element
+  private static boolean reporting_element_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "reporting_element_1")) return false;
+    boolean r;
+    r = echo_element(b, l + 1);
+    if (!r) r = assert_element(b, l + 1);
+    return r;
+  }
+
+  /* ********************************************************** */
   // EXCL
   public static boolean root_op(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_op")) return false;
@@ -1548,14 +1565,47 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // object | declaration | import
+  // comment_item | (object | declaration | import) comment_item*
   static boolean statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "statement")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = comment_item(b, l + 1);
+    if (!r) r = statement_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (object | declaration | import) comment_item*
+  private static boolean statement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "statement_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = statement_1_0(b, l + 1);
+    r = r && statement_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // object | declaration | import
+  private static boolean statement_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "statement_1_0")) return false;
     boolean r;
     r = object(b, l + 1);
     if (!r) r = declaration(b, l + 1);
     if (!r) r = import_$(b, l + 1);
     return r;
+  }
+
+  // comment_item*
+  private static boolean statement_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "statement_1_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "statement_1_1", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1609,7 +1659,7 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (for_element | if_element | bind_else_element | else_element | let_element | echo_element | assert_element | EACH_KEYWORD)* expr?
+  // comment_item* (vector_item_expr | expr )
   static boolean vector_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_item")) return false;
     boolean r;
@@ -1620,37 +1670,131 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (for_element | if_element | bind_else_element | else_element | let_element | echo_element | assert_element | EACH_KEYWORD)*
+  // comment_item*
   private static boolean vector_item_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_item_0")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!vector_item_0_0(b, l + 1)) break;
+      if (!comment_item(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "vector_item_0", c)) break;
     }
     return true;
   }
 
-  // for_element | if_element | bind_else_element | else_element | let_element | echo_element | assert_element | EACH_KEYWORD
-  private static boolean vector_item_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "vector_item_0_0")) return false;
+  // vector_item_expr | expr
+  private static boolean vector_item_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_1")) return false;
+    boolean r;
+    r = vector_item_expr(b, l + 1);
+    if (!r) r = expr(b, l + 1, -1);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LPARENTH? (comment_item* (vector_item_prefix_element | reporting_element))+ comment_item* expr? RPARENTH?
+  static boolean vector_item_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = vector_item_expr_0(b, l + 1);
+    r = r && vector_item_expr_1(b, l + 1);
+    r = r && vector_item_expr_2(b, l + 1);
+    r = r && vector_item_expr_3(b, l + 1);
+    r = r && vector_item_expr_4(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // LPARENTH?
+  private static boolean vector_item_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_0")) return false;
+    consumeToken(b, LPARENTH);
+    return true;
+  }
+
+  // (comment_item* (vector_item_prefix_element | reporting_element))+
+  private static boolean vector_item_expr_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = vector_item_expr_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!vector_item_expr_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "vector_item_expr_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // comment_item* (vector_item_prefix_element | reporting_element)
+  private static boolean vector_item_expr_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = vector_item_expr_1_0_0(b, l + 1);
+    r = r && vector_item_expr_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // comment_item*
+  private static boolean vector_item_expr_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_1_0_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "vector_item_expr_1_0_0", c)) break;
+    }
+    return true;
+  }
+
+  // vector_item_prefix_element | reporting_element
+  private static boolean vector_item_expr_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_1_0_1")) return false;
+    boolean r;
+    r = vector_item_prefix_element(b, l + 1);
+    if (!r) r = reporting_element(b, l + 1);
+    return r;
+  }
+
+  // comment_item*
+  private static boolean vector_item_expr_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!comment_item(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "vector_item_expr_2", c)) break;
+    }
+    return true;
+  }
+
+  // expr?
+  private static boolean vector_item_expr_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_3")) return false;
+    expr(b, l + 1, -1);
+    return true;
+  }
+
+  // RPARENTH?
+  private static boolean vector_item_expr_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_expr_4")) return false;
+    consumeToken(b, RPARENTH);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // for_element | if_element | bind_else_element | else_element | let_element | EACH_KEYWORD
+  static boolean vector_item_prefix_element(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "vector_item_prefix_element")) return false;
     boolean r;
     r = for_element(b, l + 1);
     if (!r) r = if_element(b, l + 1);
     if (!r) r = bind_else_element(b, l + 1);
     if (!r) r = else_element(b, l + 1);
     if (!r) r = let_element(b, l + 1);
-    if (!r) r = echo_element(b, l + 1);
-    if (!r) r = assert_element(b, l + 1);
     if (!r) r = consumeToken(b, EACH_KEYWORD);
     return r;
-  }
-
-  // expr?
-  private static boolean vector_item_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "vector_item_1")) return false;
-    expr(b, l + 1, -1);
-    return true;
   }
 
   /* ********************************************************** */
@@ -2012,39 +2156,40 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LBRACKET [vector_item ( COMMA+ (vector_item | &RBRACKET) )*] RBRACKET
+  // LBRACKET [vector_item ( COMMA (vector_item | &RBRACKET) )*] RBRACKET
   public static boolean vector_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_expr")) return false;
     if (!nextTokenIsSmart(b, LBRACKET)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, VECTOR_EXPR, null);
     r = consumeTokenSmart(b, LBRACKET);
-    r = r && vector_expr_1(b, l + 1);
-    p = r; // pin = 2
-    r = r && consumeToken(b, RBRACKET);
+    p = r; // pin = 1
+    r = r && report_error_(b, vector_expr_1(b, l + 1));
+    r = p && consumeToken(b, RBRACKET) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // [vector_item ( COMMA+ (vector_item | &RBRACKET) )*]
+  // [vector_item ( COMMA (vector_item | &RBRACKET) )*]
   private static boolean vector_expr_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_expr_1")) return false;
     vector_expr_1_0(b, l + 1);
     return true;
   }
 
-  // vector_item ( COMMA+ (vector_item | &RBRACKET) )*
+  // vector_item ( COMMA (vector_item | &RBRACKET) )*
   private static boolean vector_expr_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_expr_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = vector_item(b, l + 1);
+    p = r; // pin = 1
     r = r && vector_expr_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // ( COMMA+ (vector_item | &RBRACKET) )*
+  // ( COMMA (vector_item | &RBRACKET) )*
   private static boolean vector_expr_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_expr_1_0_1")) return false;
     while (true) {
@@ -2055,30 +2200,16 @@ public class OpenSCADParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA+ (vector_item | &RBRACKET)
+  // COMMA (vector_item | &RBRACKET)
   private static boolean vector_expr_1_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "vector_expr_1_0_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = vector_expr_1_0_1_0_0(b, l + 1);
-    r = r && vector_expr_1_0_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // COMMA+
-  private static boolean vector_expr_1_0_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "vector_expr_1_0_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = consumeTokenSmart(b, COMMA);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeTokenSmart(b, COMMA)) break;
-      if (!empty_element_parsed_guard_(b, "vector_expr_1_0_1_0_0", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
+    p = r; // pin = 1
+    r = r && vector_expr_1_0_1_0_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // vector_item | &RBRACKET

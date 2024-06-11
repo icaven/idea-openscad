@@ -29,7 +29,7 @@ private item ::= (
 
 private comment_item ::= COMMENT_C_STYLE | COMMENT_DOC | COMMENT_SINGLELINE | COMMENT_SINGLELINE_BLOCK | COMMENT_CUSTOMIZER_VALUE | COMMENT_CUSTOMIZER_TABS
 
-private statement ::= object | declaration | import
+private statement ::= comment_item | (object | declaration | import) comment_item*
 
 import ::= (
     include_import
@@ -212,6 +212,7 @@ echo_expr ::= echo_element expr?
 assert_element ::= ASSERT_KEYWORD assert_arg_list
 assert_arg_list ::= LPARENTH (expr | IDENTIFIER) (COMMA (expr | IDENTIFIER |  STRING_LITERAL))* RPARENTH
 assert_expr ::= assert_element expr?
+reporting_element ::= comment_item* (echo_element | assert_element)
 elvis_expr ::= expr QUERY (elvis_expr | expr) COLON (elvis_expr | expr)
 test_expr ::= test_exp_ref LPARENTH expr RPARENTH
 test_exp_ref ::= IS_UNDEF_KEYWORD
@@ -230,8 +231,10 @@ index_expr ::= expr LBRACKET (elvis_expr | <<innerExpression>>) RBRACKET
 each_expr ::= EACH_KEYWORD expr
 range_expr ::= LBRACKET expr COLON expr [ COLON expr ] RBRACKET
 list_expr ::= LPARENTH expr (COMMA expr)* RPARENTH
-vector_expr ::= LBRACKET [vector_item ( COMMA+ (vector_item | &RBRACKET) )*] RBRACKET { pin(".*")=2 }
-private vector_item ::= (for_element | if_element | bind_else_element | else_element | let_element | echo_element | assert_element | EACH_KEYWORD)* expr? { recoverWhile=recover_vector }
+vector_expr ::= LBRACKET [vector_item ( COMMA (vector_item | &RBRACKET) )*] RBRACKET { pin(".*")=1 }
+private vector_item_prefix_element ::= (for_element | if_element | bind_else_element | else_element | let_element | EACH_KEYWORD)
+private vector_item_expr ::= LPARENTH? (comment_item* (vector_item_prefix_element | reporting_element))+ comment_item* expr? RPARENTH?
+private vector_item ::= comment_item* (vector_item_expr | expr ) { recoverWhile=recover_vector }
 private recover_vector ::= ! (COMMA | RBRACKET)
 for_element ::= FOR_KEYWORD for_declaration_list
 for_declaration_list ::= LPARENTH for_declaration RPARENTH {pin(".*")=1}
@@ -299,7 +302,7 @@ function_name_ref ::= IDENTIFIER {
     methods=[getPresentation getNameIdentifier]
 }
 
-arg_assignment_list ::= LPARENTH arg_assignment? ( COMMA+ arg_assignment )* RPARENTH {pin(".*")=1}
+arg_assignment_list ::= LPARENTH arg_assignment? ( COMMA arg_assignment )* RPARENTH {pin(".*")=1}
 arg_assignment ::= [ parameter_reference EQUALS ] expr {
     recoverWhile=recover_arg
 }

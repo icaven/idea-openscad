@@ -282,6 +282,10 @@ public class OpenSCADVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitReportingElement(@NotNull OpenSCADReportingElement o) {
+    visitPsiElement(o);
+  }
+
   public void visitRootOp(@NotNull OpenSCADRootOp o) {
     visitOperator(o);
   }
