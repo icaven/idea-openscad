@@ -18,6 +18,12 @@ public class OpenSCADIndentBuilder {
         this.settings = settings.getCustomSettings(OpenSCADCodeStyleSettings.class);
     }
 
+    private boolean isComment(final IElementType elementType)
+    {
+        return elementType == COMMENT_SINGLELINE || elementType == COMMENT_SINGLELINE_BLOCK ||
+                elementType == COMMENT_C_STYLE || elementType == COMMENT_DOC;
+    }
+
     public Indent getChildIndent(final ASTNode node) {
         IElementType elementType = node.getElementType();
         ASTNode parent = node.getTreeParent();
@@ -39,7 +45,11 @@ public class OpenSCADIndentBuilder {
             } else {
                 return Indent.getNoneIndent();
             }
-        } else if (parentType == IF_OBJ && (elementType == BUILTIN_OBJ || elementType == FOR_OBJ)) { // Indent statements in IF_OBJ without brackets
+        } else if (parentType == FOR_OBJ &&
+                (isComment(elementType) || elementType == MODULE_CALL_OBJ || elementType == BUILTIN_OBJ || elementType == IF_OBJ)) { // Indent statements in IF_OBJ without brackets
+            return Indent.getNormalIndent();
+        } else if (parentType == IF_OBJ &&
+                (isComment(elementType) || elementType == MODULE_CALL_OBJ || elementType == BUILTIN_OBJ || elementType == FOR_OBJ)) { // Indent statements in IF_OBJ without brackets
             return Indent.getNormalIndent();
         } else if (MATHEMATICAL_EXPR.contains(parentType)) {
             return Indent.getNormalIndent();

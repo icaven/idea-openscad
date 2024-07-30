@@ -93,7 +93,7 @@ public class OpenSCADParserTokenSets {
     );
 
     public static final TokenSet LINE_COMMENT_TOKENS = TokenSet.create(
-            COMMENT_SINGLELINE
+            COMMENT_SINGLELINE, COMMENT_SINGLELINE_BLOCK
     );
 
 

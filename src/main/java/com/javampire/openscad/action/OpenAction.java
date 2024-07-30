@@ -1,5 +1,6 @@
 package com.javampire.openscad.action;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -30,5 +31,10 @@ public class OpenAction extends OpenSCADExecutableAction {
     @Override
     protected List<String> getArguments(@NotNull final AnActionEvent event) {
         return Collections.singletonList(event.getData(CommonDataKeys.VIRTUAL_FILE).getPath());
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT;
     }
 }

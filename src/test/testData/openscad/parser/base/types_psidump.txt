@@ -2765,7 +2765,7 @@ OpenSCAD File(0,4867)
       OpenSCADLiteralExprImpl(LITERAL_EXPR)(4861,4862)
         PsiElement(OpenSCADTokenType.NUMBER_LITERAL)('1')(4861,4862)
       PsiElement(OpenSCADTokenType.COMMA)(',')(4862,4863)
-      PsiErrorElement:<expr>, <reporting element>, OpenSCADTokenType.COMMENT_CUSTOMIZER_TABS, OpenSCADTokenType.COMMENT_CUSTOMIZER_VALUE, OpenSCADTokenType.COMMENT_C_STYLE, OpenSCADTokenType.COMMENT_DOC, OpenSCADTokenType.COMMENT_SINGLELINE, OpenSCADTokenType.COMMENT_SINGLELINE_BLOCK, OpenSCADTokenType.EACH_KEYWORD, OpenSCADTokenType.ELSE_KEYWORD, OpenSCADTokenType.FOR_KEYWORD, OpenSCADTokenType.IF_KEYWORD, OpenSCADTokenType.LET_KEYWORD or OpenSCADTokenType.LPARENTH expected, got ','(4863,4863)
+      PsiErrorElement:<expr>, <reporting element>, OpenSCADTokenType.COMMENT_CUSTOMIZER_VALUE, OpenSCADTokenType.COMMENT_C_STYLE, OpenSCADTokenType.COMMENT_DOC, OpenSCADTokenType.COMMENT_SINGLELINE, OpenSCADTokenType.COMMENT_SINGLELINE_BLOCK, OpenSCADTokenType.EACH_KEYWORD, OpenSCADTokenType.ELSE_KEYWORD, OpenSCADTokenType.FOR_KEYWORD, OpenSCADTokenType.IF_KEYWORD, OpenSCADTokenType.LET_KEYWORD or OpenSCADTokenType.LPARENTH expected, got ','(4863,4863)
         <empty list>
       PsiElement(OpenSCADTokenType.COMMA)(',')(4863,4864)
       OpenSCADLiteralExprImpl(LITERAL_EXPR)(4864,4865)
